@@ -518,7 +518,7 @@ void ProcessRMC()
 		char checkSum[3];
 		
 		//double latTemp, latGrau, latMinutos, latSegundos, lonTemp, lonGrau, lonSegundos;
-		char latitude[80], latGrau[20], latMinutos[20], latSegundos[20], longitude[80],lonMinutos[20], lonGrau[20], lonSegundos[20], timeTotal[80], timeHora[20],timeMin[20], timeSeg[20];
+		char latitude[40], latGrau[20], latMinutos[20], latSegundos[20], longitude[40],lonMinutos[20], lonGrau[20], lonSegundos[20], timeTotal[40], timeHora[20],timeMin[20], timeSeg[20], dia[20], mes[20], ano[20], dataDeEnvio[40];
 		
 		//double latEnviar;
 		
@@ -526,21 +526,19 @@ void ProcessRMC()
 		result = sscanf(bufferGps, "$GPRMC,%[^','], %[^','], %[^','], %[^','], %[^','], %[^','], %[^','], %[^','], %[^','], %[^','], %[^','], %[^','], %[^',']", time, pos, lat, latDir, lon, lonDir, speed, track, date, magVar, varDir, mode, checkSum);
 		
 
-		//HAL_UART_Transmit(&huart2, (uint8_t *)time, 20, 10);
+		HAL_UART_Transmit(&huart2, (uint8_t *)date, 20, 10);
 		
 		char string1[5] = "\n";
 		if(result)
 		{
-			//Latitude______________________________________________________________________________________________________________________
-
-    for(int i = 0; i< )
+			//Latitude_______________________________________________________________________________________________________________________________________________________________________________________________________
 			strcat(latitude,"Latitude: ");
             
       strcat(latGrau,&lat[0]); 
       strcat(latGrau,&lat[1]);
       latGrau[2] = '\0';
       strcat(latitude,latGrau);
-      strcat(latitude,"ï¿½");
+      strcat(latitude,"°");
 
       strcat(latMinutos,&lat[2]); 
       strcat(latMinutos,&lat[3]); 
@@ -571,7 +569,7 @@ void ProcessRMC()
       strcat(lonGrau,&lon[1]);
       lonGrau[2] = '\0';
       strcat(longitude,lonGrau);
-      strcat(longitude,"ï¿½");
+      strcat(longitude,"°");
 
       strcat(lonMinutos,&lon[2]); 
       strcat(lonMinutos,&lon[3]); 
@@ -580,7 +578,7 @@ void ProcessRMC()
       strcat(longitude,"'");
 
       strcat(lonSegundos,&lon[4]); 
-      strcat(lonSegundos,&lon[7]); 
+      strcat(lonSegundos,&lon[6]); 
       lonSegundos[2] = '\0';
 			strcat(longitude,lonSegundos);
       strcat(longitude,"''");
@@ -595,7 +593,7 @@ void ProcessRMC()
 			strcpy(lonSegundos, "\0");
 			strcpy(longitude, "\0");
 			
-			//Tempo_________________________________________
+			//Tempo___________________________________________________________________________________________________________________________________________________________________________________________________________
 			strcat(timeTotal,"Hora: ");
             
       strcat(timeHora,&time[0]); 
@@ -609,7 +607,7 @@ void ProcessRMC()
       timeMin[2] = '\0';
 			strcat(timeTotal,timeMin);
       strcat(timeTotal,"m");
-
+			
       strcat(timeSeg,&time[4]); 
       strcat(timeSeg,&time[5]); 
       timeSeg[2] = '\0';
@@ -618,22 +616,44 @@ void ProcessRMC()
 			strcat(timeTotal,"\n");
 			
 			HAL_UART_Transmit(&huart2, (uint8_t *)string1, strlen(string1), 10);
-			HAL_UART_Transmit(&huart2, (uint8_t *)timeHora, strlen(timeHora), 10);
-			
-			HAL_UART_Transmit(&huart2, (uint8_t *)string1, strlen(string1), 10);
-			HAL_UART_Transmit(&huart2, (uint8_t *)timeMin, strlen(timeMin), 10);
-			
-			HAL_UART_Transmit(&huart2, (uint8_t *)string1, strlen(string1), 10);
-			HAL_UART_Transmit(&huart2, (uint8_t *)timeSeg, strlen(timeSeg), 10);
-			
-			HAL_UART_Transmit(&huart2, (uint8_t *)string1, strlen(string1), 10);
-			HAL_UART_Transmit(&huart2, (uint8_t *)timeTotal, strlen(timeTotal), 10);
+			HAL_UART_Transmit(&huart2, (uint8_t *)timeTotal, 20, 10);
 			
 			strcpy(timeHora, "\0");
 			strcpy(timeMin, "\0");
 			strcpy(timeSeg, "\0");
 			strcpy(timeTotal, "\0");
-					
+			
+			//Data____________________________________________________________________________________________________________________________________________________________________________________________________________
+			
+			strcat(dataDeEnvio,"Data: ");
+            
+      strcat(dia,&date[0]); 
+      strcat(dia,&date[1]);
+      dia[2] = '\0';
+      strcat(dataDeEnvio,dia);
+      strcat(dataDeEnvio,"/");
+
+      strcat(mes,&date[2]); 
+      strcat(mes,&date[3]); 
+      mes[2] = '\0';
+			strcat(dataDeEnvio,mes);
+      strcat(dataDeEnvio,"/");
+			
+      strcat(ano,&date[4]); 
+      strcat(ano,&date[5]); 
+      ano[2] = '\0';
+			strcat(dataDeEnvio,ano);
+			strcat(dataDeEnvio,"\n");
+			
+			HAL_UART_Transmit(&huart2, (uint8_t *)string1, strlen(string1), 10);
+			HAL_UART_Transmit(&huart2, (uint8_t *)dataDeEnvio, 20, 10);
+			
+			strcpy(dia, "\0");
+			strcpy(mes, "\0");
+			strcpy(ano, "\0");
+			strcpy(dataDeEnvio, "\0");
+	
+			
 		}
 
 	}
