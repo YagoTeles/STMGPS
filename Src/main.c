@@ -26,6 +26,7 @@
 #include "string.h"
 #include "stdio.h"
 #include "RingBuffer.h"
+#include "math.h"
 
 /* USER CODE END Includes */
 
@@ -504,9 +505,9 @@ int cont = 0;
 int hr=0,min=0,dia=0,mes=0,ano=0;
 void ProcessRMC()
 	{
-		/*char time[80];
+		char time[80];
 		char pos[1];
-		char lat[80], lon[80];
+		char lat[20], lon[20];
 		char lonDir[80], latDir[80];
 		char speed[80];
 		char track[80];
@@ -514,57 +515,127 @@ void ProcessRMC()
 		char magVar[80];
 		char varDir[80];
 		char mode[1];
-		char checkSum[3];*/
+		char checkSum[3];
+		
+		//double latTemp, latGrau, latMinutos, latSegundos, lonTemp, lonGrau, lonSegundos;
+		char latitude[80], latGrau[20], latMinutos[20], latSegundos[20], longitude[80],lonMinutos[20], lonGrau[20], lonSegundos[20], timeTotal[80], timeHora[20],timeMin[20], timeSeg[20];
+		
+		//double latEnviar;
 		
 		uint8_t result = 0;
-		//result = sscanf(bufferGps, "$GPRMC,%[^','], %[^','], %[^','], %[^','], %[^','], %[^','], %[^','], %[^','], %[^','], %[^','], %[^','], %[^','], %[^',']", time, pos, lat, latDir, lon, lonDir, speed, track, date, magVar, varDir, mode, checkSum);
+		result = sscanf(bufferGps, "$GPRMC,%[^','], %[^','], %[^','], %[^','], %[^','], %[^','], %[^','], %[^','], %[^','], %[^','], %[^','], %[^','], %[^',']", time, pos, lat, latDir, lon, lonDir, speed, track, date, magVar, varDir, mode, checkSum);
 		
-    cont = 0;
-    char buffer[15];
-    int i = 0;
-    while (bufferGps[cont] != ',') cont++;  
-    cont++;
-    while (bufferGps[cont] != ',') cont++;  
-    cont++;cont++;cont++;
-    while (bufferGps[cont] != ',') cont++;  
-    cont++;
-    while (bufferGps[cont] != ',') cont++;  
-    cont++;
-    while (bufferGps[cont] != ',') cont++;  
-    cont++;
-    while (bufferGps[cont] != ',') cont++;
-    cont++;
-    //Pegar latitude
-    i=0;
-    memset(buffer, '\0', 12);
-    while (bufferGps[cont] != ',')
-    {
-      buffer[i] = bufferGps[cont];
-      i++;
-      cont++;
-    }
-      int16_t num = (atoi(buffer));   
-      int j = 0;
-      while (buffer[j] != '.') j++;
-      j++;
-      int declen = (strlen(buffer))-j;
-      int dec = atoi ((char *) buffer+j);
-      float lat = num + (dec/pow(10, (declen)));
+
+		//HAL_UART_Transmit(&huart2, (uint8_t *)time, 20, 10);
 		
-/*
+		char string1[5] = "\n";
 		if(result)
 		{
-			sprintf("RECEBIDO = %0X\n", time);
-			HAL_UART_Transmit(&huart2, (uint8_t *)60, 3, 1); 
+			//Latitude______________________________________________________________________________________________________________________
+
+    for(int i = 0; i< )
+			strcat(latitude,"Latitude: ");
+            
+      strcat(latGrau,&lat[0]); 
+      strcat(latGrau,&lat[1]);
+      latGrau[2] = '\0';
+      strcat(latitude,latGrau);
+      strcat(latitude,"�");
+
+      strcat(latMinutos,&lat[2]); 
+      strcat(latMinutos,&lat[3]); 
+      latMinutos[2] = '\0';
+			strcat(latitude,latMinutos);
+      strcat(latitude,"'");
+
+      strcat(latSegundos,&lat[5]); 
+      strcat(latSegundos,&lat[6]); 
+      latSegundos[2] = '\0';
+			strcat(latitude,latSegundos);
+      strcat(latitude,"''");
+			strcat(latitude,latDir);
+			strcat(latitude,"\n");
 			
+			HAL_UART_Transmit(&huart2, (uint8_t *)string1, strlen(string1), 10);
+			HAL_UART_Transmit(&huart2, (uint8_t *)latitude, strlen(latitude), 10);
+			
+			strcpy(latGrau, "\0");
+			strcpy(latMinutos, "\0");
+			strcpy(latSegundos, "\0");
+			strcpy(latitude, "\0");
+			
+			//Longitude_______________________________________________________________________________________________________________________________________________________________________________________________________
+			strcat(longitude,"Longitude: ");
+            
+      strcat(lonGrau,&lon[0]); 
+      strcat(lonGrau,&lon[1]);
+      lonGrau[2] = '\0';
+      strcat(longitude,lonGrau);
+      strcat(longitude,"�");
+
+      strcat(lonMinutos,&lon[2]); 
+      strcat(lonMinutos,&lon[3]); 
+      lonMinutos[2] = '\0';
+			strcat(longitude,lonMinutos);
+      strcat(longitude,"'");
+
+      strcat(lonSegundos,&lon[4]); 
+      strcat(lonSegundos,&lon[7]); 
+      lonSegundos[2] = '\0';
+			strcat(longitude,lonSegundos);
+      strcat(longitude,"''");
+			strcat(longitude,lonDir);
+			strcat(longitude,"\n");
+			
+			HAL_UART_Transmit(&huart2, (uint8_t *)string1, strlen(string1), 10);
+			HAL_UART_Transmit(&huart2, (uint8_t *)longitude, strlen(longitude), 10);
+			
+			strcpy(lonGrau, "\0");
+			strcpy(lonMinutos, "\0");
+			strcpy(lonSegundos, "\0");
+			strcpy(longitude, "\0");
+			
+			//Tempo_________________________________________
+			strcat(timeTotal,"Hora: ");
+            
+      strcat(timeHora,&time[0]); 
+      strcat(timeHora,&time[1]);
+      timeHora[2] = '\0';
+      strcat(timeTotal,timeHora);
+      strcat(timeTotal,"h");
+
+      strcat(timeMin,&time[2]); 
+      strcat(timeMin,&time[3]); 
+      timeMin[2] = '\0';
+			strcat(timeTotal,timeMin);
+      strcat(timeTotal,"m");
+
+      strcat(timeSeg,&time[4]); 
+      strcat(timeSeg,&time[5]); 
+      timeSeg[2] = '\0';
+			strcat(timeTotal,timeSeg);
+      strcat(timeTotal,"s");
+			strcat(timeTotal,"\n");
+			
+			HAL_UART_Transmit(&huart2, (uint8_t *)string1, strlen(string1), 10);
+			HAL_UART_Transmit(&huart2, (uint8_t *)timeHora, strlen(timeHora), 10);
+			
+			HAL_UART_Transmit(&huart2, (uint8_t *)string1, strlen(string1), 10);
+			HAL_UART_Transmit(&huart2, (uint8_t *)timeMin, strlen(timeMin), 10);
+			
+			HAL_UART_Transmit(&huart2, (uint8_t *)string1, strlen(string1), 10);
+			HAL_UART_Transmit(&huart2, (uint8_t *)timeSeg, strlen(timeSeg), 10);
+			
+			HAL_UART_Transmit(&huart2, (uint8_t *)string1, strlen(string1), 10);
+			HAL_UART_Transmit(&huart2, (uint8_t *)timeTotal, strlen(timeTotal), 10);
+			
+			strcpy(timeHora, "\0");
+			strcpy(timeMin, "\0");
+			strcpy(timeSeg, "\0");
+			strcpy(timeTotal, "\0");
+					
 		}
-*/
-    /*if(result)
-        {
-          //sprintf("RECEBIDO = %0X\n", lat);
-          HAL_UART_Transmit(&huart2, (uint8_t *)60, 3, 1); 
-          
-        }*/
+
 	}
 uint8_t GPS_recebeByte(uint8_t byteReceived){
 		//circular_buf_put(ringBufferGps, byteReceivedGps);              // put every received byte into ring buffer
@@ -809,7 +880,7 @@ void TrataGps(void const * argument)
    // ringBufferGps = circular_buf_init(rxBufferGps, UART_RX_BUFFER_SIZE);
     HAL_UART_Receive_IT(&huart2, &byteReceivedGps, 1);//mudar pra uart 1
 	
-		char string1[] = "Recebeu msg\n";
+		char string1[] = "\nRecebeu msg\n";
 
     /* Infinite loop */
     for(;;)
