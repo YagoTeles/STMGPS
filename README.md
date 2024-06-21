@@ -1,3 +1,1 @@
-# STMGPS
-
-CUCETA
+# STMGP
